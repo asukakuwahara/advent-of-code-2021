@@ -48,47 +48,31 @@ const diagnoseSubmarine = (binaryNumbers) => {
 };
 
 console.log(diagnoseSubmarine(array));
+
 // Part 2
-
-const filter = (input, indexOfLetter) => {
-  if (input.length <= 1) return input;
-  lines_with_1 = [];
-  lines_with_0 = [];
-  for (let i in input) {
-    if (input[i][indexOfLetter] === "1") {
-      lines_with_1.push(input[i]);
+const getRatingValue = (numbers, indexOfLetter, type) => {
+  if (numbers.length <= 1) return numbers;
+  let lines_with_1 = [];
+  let lines_with_0 = [];
+  for (let numberIndex in numbers) {
+    if (numbers[numberIndex][indexOfLetter] === "1") {
+      lines_with_1.push(numbers[numberIndex]);
     } else {
-      lines_with_0.push(input[i]);
+      lines_with_0.push(numbers[numberIndex]);
     }
   }
+
   if (lines_with_0.length > lines_with_1.length) {
-    input = lines_with_0;
+    type === "majority" ? (numbers = lines_with_0) : (numbers = lines_with_1);
   } else {
-    input = lines_with_1;
+    type === "majority" ? (numbers = lines_with_1) : (numbers = lines_with_0);
   }
   indexOfLetter++;
-  return filter(input, indexOfLetter);
+  return getRatingValue(numbers, indexOfLetter, type);
 };
 
-const filterMinority = (input, indexOfLetter) => {
-  if (input.length <= 1) return input;
-  lines_with_1 = [];
-  lines_with_0 = [];
-  for (let i in input) {
-    if (input[i][indexOfLetter] === "1") {
-      lines_with_1.push(input[i]);
-    } else {
-      lines_with_0.push(input[i]);
-    }
-  }
-  if (lines_with_0.length > lines_with_1.length) {
-    input = lines_with_1;
-  } else {
-    input = lines_with_0;
-  }
-  indexOfLetter++;
-  return filterMinority(input, indexOfLetter);
-};
-console.log(
-  parseInt(filter(array, 0), 2) * parseInt(filterMinority(array, 0), 2)
-);
+const getLifeSupportRating = (listOfNumbers) =>
+  parseInt(getRatingValue(listOfNumbers, 0, "majority"), 2) *
+  parseInt(getRatingValue(listOfNumbers, 0, "minority"), 2);
+
+console.log(getLifeSupportRating(array));
