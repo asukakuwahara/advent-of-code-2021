@@ -102,17 +102,50 @@ function play(newCards, bingoCalls) {
 
 // container function, calculate results
 function calculateResult(newCards, bingoCalls) {
-  if (!play(newCards, bingoCalls)) {
+  if (!getTheLastWinner(newCards, bingoCalls)) {
     return "no hit!!";
   }
-  const { winner, calledNumbers, index } = play(newCards, bingoCalls);
+  const { winner, calledNumbers, index } = getTheLastWinner(
+    newCards,
+    bingoCalls
+  );
   const winningCard = winner.reduce((numbers, row) => numbers.concat(row));
   const filteredNumber = winningCard.filter(
     (number) => !calledNumbers.includes(number)
   );
   const sum = filteredNumber.reduce((a, b) => parseInt(a) + parseInt(b));
-
   return sum * index;
 }
 
 console.log(calculateResult(newCards, bingoCalls));
+
+// Part 2
+function getTheLastWinner(newCards, bingoCalls) {
+  const calledNumbers = [];
+  const remainingArray = [...newCards];
+
+  for (numberIndex in bingoCalls) {
+    calledNumbers.push(bingoCalls[numberIndex]);
+    for (index in remainingArray) {
+      if (checkWinningLane(remainingArray[index], calledNumbers)) {
+        if (remainingArray.length <= 1) {
+          return (winner = {
+            winner: remainingArray[index],
+            calledNumbers,
+            index: calledNumbers[calledNumbers.length - 1],
+          });
+        } else {
+          remainingArray.splice(
+            remainingArray.findIndex(
+              (elem) =>
+                JSON.stringify(elem) === JSON.stringify(remainingArray[index])
+            ),
+            1
+          );
+        }
+      }
+    }
+  }
+}
+
+console.log("result", getTheLastWinner(newCards, bingoCalls));
